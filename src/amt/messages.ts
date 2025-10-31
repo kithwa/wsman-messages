@@ -271,6 +271,24 @@ class EthernetPortSettings extends Base {
    * @returns string
    */
   Put = (ethernetPortObject: Models.EthernetPortSettings): string => this.protectedPut(ethernetPortObject, true)
+
+  /**
+   * Sets temporary link preference with timeout.
+   * @param linkPreference 1 = ME | 2 = HOST
+   * @param timeout Timeout in seconds before preference expires (0 for immediate revert semantics per firmware behavior).
+   * @returns string
+   */
+  SetLinkPreference = (
+    linkPreference: Types.EthernetPortSettings.LinkPreference,
+    timeout: number
+  ): string => {
+    const header = this.wsmanMessageCreator.createHeader(Actions.SET_LINK_PREFERENCE, this.className)
+    const body = this.wsmanMessageCreator.createBody('SetLinkPreference_INPUT', this.className, [
+      { LinkPreference: linkPreference },
+      { Timeout: timeout }
+    ])
+    return this.wsmanMessageCreator.createXml(header, body)
+  }
 }
 class GeneralSettings extends Base {
   className = Classes.GENERAL_SETTINGS
