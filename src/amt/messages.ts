@@ -271,6 +271,28 @@ class EthernetPortSettings extends Base {
    * @returns string
    */
   Put = (ethernetPortObject: Models.EthernetPortSettings): string => this.protectedPut(ethernetPortObject, true)
+
+  /**
+   * @param linkPreference Desired link preference value (1 = ME, 2 = HOST).
+   * @param timeout Optional timeout in seconds (1..65535) after which preference reverts to HOST; valid only when linkPreference = 1.
+   * @returns string
+   */
+  SetLinkPreference = (
+    linkPreference: Types.EthernetPortSettings.LinkPreference,
+    timeout?: number
+  ): string => {
+    // If timeout is provided for HOST (2), ignore it silently per request (no range validation performed)
+    if (linkPreference !== 1) {
+      timeout = undefined
+    }
+    const header = this.wsmanMessageCreator.createHeader(Actions.SET_LINK_PREFERENCE, this.className)
+    const input: any = { LinkPreference: linkPreference }
+    if (timeout != null && linkPreference === 1) {
+      input.Timeout = timeout
+    }
+    const body = this.wsmanMessageCreator.createBody('SetLinkPreference_INPUT', this.className, [input])
+    return this.wsmanMessageCreator.createXml(header, body)
+  }
 }
 class GeneralSettings extends Base {
   className = Classes.GENERAL_SETTINGS

@@ -414,6 +414,19 @@ describe('AMT Tests', () => {
       const response = amtClass.EthernetPortSettings.Put(testBody)
       expect(response).toEqual(correctResponse)
     })
+    it('should create a valid amt_EthernetPortSettings SetLinkPreference wsman message (ME with timeout)', () => {
+      const linkPreference = 1
+      const timeout = 30
+      const correctResponse = `${xmlHeader}${envelope}http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings/SetLinkPreference</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings</w:ResourceURI><a:MessageID>${(messageId++).toString()}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><h:SetLinkPreference_INPUT xmlns:h="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings"><h:LinkPreference>${linkPreference}</h:LinkPreference><h:Timeout>${timeout}</h:Timeout></h:SetLinkPreference_INPUT></Body></Envelope>`
+      const response = amtClass.EthernetPortSettings.SetLinkPreference(linkPreference, timeout)
+      expect(response).toEqual(correctResponse)
+    })
+    it('should create a valid amt_EthernetPortSettings SetLinkPreference wsman message (HOST no timeout)', () => {
+      const linkPreference = 2
+      const correctResponse = `${xmlHeader}${envelope}http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings/SetLinkPreference</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings</w:ResourceURI><a:MessageID>${(messageId++).toString()}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><h:SetLinkPreference_INPUT xmlns:h="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings"><h:LinkPreference>${linkPreference}</h:LinkPreference></h:SetLinkPreference_INPUT></Body></Envelope>`
+      const response = amtClass.EthernetPortSettings.SetLinkPreference(linkPreference)
+      expect(response).toEqual(correctResponse)
+    })
   })
   describe('GeneralSettings Tests', () => {
     it('should return a valid amt_GeneralSettings Get wsman message', () => {
