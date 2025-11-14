@@ -273,9 +273,9 @@ class EthernetPortSettings extends Base {
   Put = (ethernetPortObject: Models.EthernetPortSettings): string => this.protectedPut(ethernetPortObject, true)
 
   /**
-   * Sets temporary link preference with timeout.
+   * Sets link preference with timeout.
    * @param linkPreference 1 = ME | 2 = HOST
-   * @param timeout Timeout in seconds before preference expires (0 for immediate revert semantics per firmware behavior).
+   * @param timeout Timeout in seconds before preference expires. Only applicable when linkPreference is ME (1). Automatically set to 0 when linkPreference is HOST (2).
    * @param instanceID The InstanceID selector for the specific Ethernet port (e.g., "Intel(r) AMT Ethernet Port Settings 0")
    * @returns string
    */
@@ -284,11 +284,14 @@ class EthernetPortSettings extends Base {
     timeout: number,
     instanceID: string = 'Intel(r) AMT Ethernet Port Settings 0'
   ): string => {
+    // Timeout is only applicable when linkPreference is ME (1)
+    // When linkPreference is HOST (2), timeout must be 0
+    const actualTimeout = linkPreference === 2 ? 0 : timeout
     const selector = { name: 'InstanceID', value: instanceID }
     const header = this.wsmanMessageCreator.createHeader(Actions.SET_LINK_PREFERENCE, this.className, selector)
     const body = this.wsmanMessageCreator.createBody('SetLinkPreference_INPUT', this.className, [
       { LinkPreference: linkPreference },
-      { Timeout: timeout }
+      { Timeout: actualTimeout }
     ])
     return this.wsmanMessageCreator.createXml(header, body)
   }
